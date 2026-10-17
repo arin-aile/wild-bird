@@ -4,3 +4,10 @@
 
 /* Keep the upload contour only while the photo placeholder is visible. */
 #photoBox:has(#preview:not([hidden]))::before{display:none}
+
+/* A 16px computed font prevents iOS input-focus zoom; visual dimensions stay in the Figma grid. */
+body.mobile #dream{font-size:16px;width:293.333px;height:34.667px;padding-bottom:8px;transform:scale(.375);transform-origin:top left;background-size:100% 2.933px}
+body.mobile #actions button{font-size:10px;gap:4px;min-height:28px;top:660px}
+body.mobile #save{left:65px}body.mobile #share{left:184px}body.mobile #home{left:247px}
+body.mobile #actions img{height:12px;width:auto}body.mobile #share img{height:13px}body.mobile #home img{width:18px;height:auto}
+body.mobile #photoLabel img{width:9px;height:16px}

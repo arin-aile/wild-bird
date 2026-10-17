@@ -19,7 +19,17 @@ function arrange(stickers,info){const {photoWidth:iw,photoHeight:ih,photoBox,fac
  for(const s of stickers){if(s.asset==='c3d8f.png')set(s,head.x,head.y-head.h*.17,Math.max(head.w,head.h)*1.7,angle);
  else if(s.asset==='ebb0c.png')set(s,head.x,head.y-head.h*.68,head.w*1.85,angle);
  else if(s.asset==='f8d12.png'){const w=clamp(sw*.31,head.w*.55,head.w*1.05),h=w*s.h/s.w;const neck={x:shoulder.x,y:shoulder.y-head.h*.12};const hips=[landmark(23),landmark(24)],hip=hips.every(Boolean)?midpoint(...hips):{x:neck.x,y:neck.y+head.h*2};const a=Math.atan2(hip.y-neck.y,hip.x-neck.x)*180/Math.PI-90;set(s,neck.x-Math.sin(a*Math.PI/180)*h*.43,neck.y+Math.cos(a*Math.PI/180)*h*.43,w,a);}
- else if(s.asset==='b10d0.png'){const hands=[landmark(15),landmark(16)].filter(p=>p&&distance(p,mouth)<head.w*2.5).sort((a,c)=>distance(a,mouth)-distance(c,mouth));const hand=hands[0];if(hand){const r=s.h/s.w,base={x:.12,y:-.28*r},w=clamp(distance(hand,mouth)/Math.hypot(base.x,base.y),head.w*.45,head.w*.95);const a=Math.atan2(mouth.y-hand.y,mouth.x-hand.x)-Math.atan2(base.y,base.x),gx=-.17*w,gy=-.05*w*r;set(s,hand.x-gx*Math.cos(a)+gy*Math.sin(a),hand.y-gx*Math.sin(a)-gy*Math.cos(a),w,a*180/Math.PI);}else{const w=head.w*.64,h=w*s.h/s.w,a=-28*Math.PI/180;set(s,mouth.x+.05*w*Math.cos(a)-.33*h*Math.sin(a),mouth.y+.05*w*Math.sin(a)+.33*h*Math.cos(a),w,-28);}}}
+ else if(s.asset==='b10d0.png'){
+ // Keep the entire rotated microphone bounds outside the face, including its cable.
+ const limits=mobile?{x:69,y:397,w:251,h:165}:{x:990,y:236,w:532,h:496};
+ const leftSpace=head.x-head.w/2-limits.x,rightSpace=limits.x+limits.w-head.x-head.w/2;
+ const side=rightSpace>=leftSpace?1:-1,a=side*18,rad=a*Math.PI/180,ratio=s.h/s.w;
+ const gap=head.w*.18,available=Math.max(leftSpace,rightSpace)-gap;
+ const w=Math.max(1,Math.min(head.w*.62,available/(Math.abs(Math.cos(rad))+ratio*Math.abs(Math.sin(rad)))));
+ const h=w*ratio,hw=(Math.abs(Math.cos(rad))*w+Math.abs(Math.sin(rad))*h)/2,hh=(Math.abs(Math.sin(rad))*w+Math.abs(Math.cos(rad))*h)/2;
+ set(s,head.x+side*(head.w/2+gap+hw),clamp(mouth.y+h*.22,limits.y+hh,limits.y+limits.h-hh),w,a);
+ }}
+
  // Move decorative stickers off the detected person, preserving size and rotation.
  const mask=pose?.mask;
  function personAt(x,y){const nx=(x-b.x)/b.w,ny=(y-b.y)/b.h;if(nx<0||nx>1||ny<0||ny>1)return 0;if(mask){const ix=Math.min(mask.width-1,Math.floor(nx*mask.width)),iy=Math.min(mask.height-1,Math.floor(ny*mask.height));return mask.data[iy*mask.width+ix]>.35?1:0;}const faceHit=((x-head.x)/(head.w*.65))**2+((y-head.y)/(head.h*.8))**2<1;const torsoHit=Math.abs(x-shoulder.x)<sw*.55&&y>head.y+head.h*.3&&y<shoulder.y+head.h*2.5;return faceHit||torsoHit?1:0;}
