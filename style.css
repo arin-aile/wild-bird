@@ -11,3 +11,9 @@ body.mobile #actions button{font-size:10px;gap:4px;min-height:28px;top:660px}
 body.mobile #save{left:65px}body.mobile #share{left:184px}body.mobile #home{left:247px}
 body.mobile #actions img{height:12px;width:auto}body.mobile #share img{height:13px}body.mobile #home img{width:18px;height:auto}
 body.mobile #photoLabel img{width:9px;height:16px}
+
+body.mobile #actions{inset:auto 0 auto;top:660px;display:flex;align-items:center;justify-content:center;gap:14px}
+body.mobile #actions button{position:static;min-height:28px;gap:3px;font-size:8.199px;letter-spacing:-.164px}
+body.mobile #actions img{height:7.5px;width:auto}body.mobile #share img{height:7.5px}body.mobile #home img{width:12.298px;height:auto}
+#translationHelp{left:1094px;top:650px;width:369px;font-size:13px}#translationHelp label{display:block;margin-bottom:5px}#englishFallback{width:100%;font-size:16px;background:#faf8f0;border:1px solid #aaa;padding:7px;border-radius:3px}
+body.mobile #translationHelp{left:100px;top:548px;width:200px;font-size:10px}body.mobile #englishFallback{font-size:16px;padding:4px}
