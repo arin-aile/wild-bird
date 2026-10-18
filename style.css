@@ -3,7 +3,7 @@
 #dream{border-bottom:0;background: url('assets/figma/55b25.svg') left bottom / 100% 2.16px no-repeat;color:#696a6a}#dream::placeholder{color:#aea9a9}#photoBox{border:0}#photoBox::before{content:"";position:absolute;inset:-1.5px;background:url('assets/figma/upload-frame.svg') center / 100% 100% no-repeat;pointer-events:none}body.mobile #dream{background-size:100% 1.1px}body.mobile #photoBox{border:0}body.mobile #photoBox::before{inset:-.566px}
 
 /* Keep the upload contour only while the photo placeholder is visible. */
-#photoBox:has(#preview:not([hidden]))::before{display:none}
+#photoBox::before{z-index:1}
 
 /* A 16px computed font prevents iOS input-focus zoom; visual dimensions stay in the Figma grid. */
 body.mobile #dream{font-size:16px;width:293.333px;height:34.667px;padding-bottom:8px;transform:scale(.375);transform-origin:top left;background-size:100% 2.933px}
@@ -17,3 +17,6 @@ body.mobile #actions button{position:static;min-height:28px;gap:3px;font-size:8.
 body.mobile #actions img{height:7.5px;width:auto}body.mobile #share img{height:7.5px}body.mobile #home img{width:12.298px;height:auto}
 #translationHelp{left:1094px;top:650px;width:369px;font-size:13px}#translationHelp label{display:block;margin-bottom:5px}#englishFallback{width:100%;font-size:16px;background:#faf8f0;border:1px solid #aaa;padding:7px;border-radius:3px}
 body.mobile #translationHelp{left:100px;top:548px;width:200px;font-size:10px}body.mobile #englishFallback{font-size:16px;padding:4px}
+
+/* Pin the photo to the fixed upload box so intrinsic image size cannot grow its grid track. */
+#preview{position:absolute;inset:0;display:block;width:100%;height:100%;min-width:0;min-height:0;max-width:100%;max-height:100%;object-fit:contain;object-position:center}
