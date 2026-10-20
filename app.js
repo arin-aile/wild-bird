@@ -83,24 +83,13 @@ for(const el of [$('book'),$('selection')]){el.onpointermove=move;el.onpointerup
 window.addEventListener('keydown',e=>{if(state!=='done'||!selected)return;if(e.key==='Escape'){selected=null;syncBox();return;}const v={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]}[e.key];if(v){e.preventDefault();selected.x+=v[0]*(e.shiftKey?10:1);selected.y+=v[1]*(e.shiftKey?10:1);updateResult();}});
 let saving=false;
 function downloadImage(blob){const a=document.createElement('a'),url=URL.createObjectURL(blob);a.href=url;a.download='Wild-Bird.png';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),120000);}
-function mobileSavePreview(blob){
- const dialog=document.createElement('dialog'),url=URL.createObjectURL(blob),file=new File([blob],'Wild-Bird.png',{type:'image/png'});
- Object.assign(dialog.style,{width:'min(90vw,440px)',maxHeight:'85dvh',overflow:'auto',border:'0',borderRadius:'12px',padding:'16px',background:'#f5f3ee',color:'#343434'});
- const help=document.createElement('p');help.textContent='아래 이미지를 길게 눌러 저장하거나, 이미지 저장 버튼에서 사진에 저장을 선택해 주세요.';
- const preview=document.createElement('img');preview.src=url;preview.alt='저장할 Wild Bird 완성 이미지';preview.style.cssText='display:block;width:100%;height:auto;max-height:60dvh;object-fit:contain';
- const save=document.createElement('button'),close=document.createElement('button');save.textContent='이미지 저장';close.textContent='닫기';
- for(const button of [save,close])button.style.cssText='padding:12px 18px;margin:8px 4px 0;border:1px solid #777;border-radius:6px';
- save.onclick=async()=>{try{if(navigator.canShare?.({files:[file]})){await navigator.share({files:[file],title:'Wild Bird'});}else{downloadImage(blob);help.textContent='다운로드가 시작되지 않으면 위 이미지를 길게 눌러 저장해 주세요.';}}catch(error){if(error.name!=='AbortError')help.textContent='위 이미지를 길게 눌러 사진에 저장해 주세요.';}};
- close.onclick=()=>dialog.close();dialog.onclose=()=>{dialog.remove();URL.revokeObjectURL(url);controls();};
- dialog.append(help,preview,save,close);document.body.append(dialog);dialog.showModal();
-}
 $('save').onclick=async()=>{
  if(saving||state!=='done')return;saving=true;$('save').disabled=true;let out;
  try{
  const dpr=Math.min(Math.max(2,devicePixelRatio||1),3,Math.sqrt(8000000/(innerWidth*innerHeight)));out=offscreen(Math.round(innerWidth*dpr),Math.round(innerHeight*dpr));const g=out.getContext('2d');
  g.scale(dpr,dpr);g.fillStyle='#000';g.fillRect(0,0,innerWidth,innerHeight);g.save();if(mobile)g.drawImage(assets['0863f.png'],innerWidth*13/390,innerHeight*30/762,innerWidth*364/390,innerHeight*702/762);else{const x=innerWidth*.0405,y=innerHeight*.0287,w=innerWidth*.92,h=innerHeight*.9435;g.translate(x+w/2,y+h/2);g.rotate(-.36*Math.PI/180);g.drawImage(assets['998e9.png'],-w/2,-h/2,w,h);}g.restore();const r=$('book').getBoundingClientRect();g.drawImage($('book'),r.left,r.top,r.width,r.height);
  const blob=await new Promise((resolve,reject)=>{const timer=setTimeout(()=>reject(new Error('timeout')),20000);out.toBlob(value=>{clearTimeout(timer);value?resolve(value):reject(new Error('encode'));},'image/png');});
- if(mobile)mobileSavePreview(blob);else downloadImage(blob);
+ downloadImage(blob);
  }catch(error){notice('이미지를 준비하지 못했어요. 잠시 후 다시 저장해 주세요.');}
  finally{if(out){out.width=1;out.height=1;}saving=false;$('save').disabled=false;controls();}
 };
